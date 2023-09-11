@@ -1,5 +1,5 @@
 import inquirer from 'inquirer';
-import { needToDoMore, handleUseCase } from './ctx';
+import { needToDoMore, handleUseCase } from './ctx.js';
 
 type UseCase = {
 	desired_use: string

@@ -2,7 +2,11 @@ import inquirer from 'inquirer';
 import cp from 'child_process';
 import fs from 'fs';
 
-import { cargoConfig, mainFile, errorHandling, defaultStructs, exampleRoute, routeConfig, routeMod} from './boilerplate';
+import { 
+  cargoConfig, mainFile, errorHandling, 
+  defaultStructs, exampleRoute, routeConfig, 
+  routeMod
+} from './boilerplate.js';
 
 export async function createNewBackend() {
   // Get name choice
@@ -62,12 +66,12 @@ async function generateBoilerplate(projName: string) {
   });
 
   // Write the src/routes/config.rs file
-  fs.writeFile(`${projName}/src/config.rs`, routeConfig(), err => {
+  fs.writeFile(`${projName}/src/routes/config.rs`, routeConfig(), err => {
     if (err) { console.log('Failed to create src/routes/config.rs !') };
   });
 
   // Write the src/routes/mod.rs file
-  fs.writeFile(`${projName}/src/mod.rs`, routeMod(), err => {
+  fs.writeFile(`${projName}/src/routes/mod.rs`, routeMod(), err => {
     if (err) { console.log('Failed to create src/routes/mod.rs !') };
   });
 

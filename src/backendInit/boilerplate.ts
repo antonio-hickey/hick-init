@@ -1,4 +1,4 @@
-import { snakeCaseToTitleCase } from './../util';
+import { snakeCaseToTitleCase } from './../util.js';
 
 /// Cargo.toml boilerplate
 export function cargoConfig(projName: string) {

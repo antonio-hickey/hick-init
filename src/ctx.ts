@@ -1,4 +1,5 @@
 import inquirer from 'inquirer';
+import { createNewBackend } from './backendInit/index.js';
 
 export async function handleUseCase(useCase: string) {
 	/* Get relevant functionality to run */
@@ -6,7 +7,7 @@ export async function handleUseCase(useCase: string) {
 
 	// Map of use cases (key) and functions (value)
 	const useCaseMap = {
-		'create new backend': x,
+		'create new backend': createNewBackend,
 		'create new frontend':  x,
     'create new web scraper': x,
     'create new cli': x,
