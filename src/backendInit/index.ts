@@ -48,7 +48,7 @@ async function generateBoilerplate(projName: string) {
   });
 
   // Write the src/structs.rs file
-  fs.writeFile(`${projName}/src/stucts.rs`, defaultStructs(), err => {
+  fs.writeFile(`${projName}/src/structs.rs`, defaultStructs(), err => {
     if (err) {
       console.log('Failed to create src/structs.rs !');
     }

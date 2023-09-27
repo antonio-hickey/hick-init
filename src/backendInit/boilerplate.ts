@@ -16,7 +16,7 @@ dotenv = "0.15.0"
 env_logger = "0.10.0"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-sqlx = { version = "0.7", features = [ "runtime-tokio", "tls-rustls", "p
+sqlx = { version = "0.7", features = [ "runtime-tokio", "tls-rustls", "postgres" ] }
   `;
 }
 
