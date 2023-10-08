@@ -13,8 +13,7 @@ async function main() {
 			type: 'list',
 			message: 'What you making today bro0oo?',
 			choices: [
-		    'Create New Backend',
-		    'Create New Frontend (! UNIMPLEMENTED !)',
+		    'Create New Project',
         'Create New Web Scraper (! UNIMPLEMENTED !)',
         'Create New CLI (! UNIMPLEMENTED !)',
 			],

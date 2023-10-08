@@ -172,3 +172,38 @@ pub mod config;
 
   `
 }
+
+export function webRoutes(projName: string) {
+  const TitleCaseName = snakeCaseToTitleCase(projName);
+
+  return `use crate::error::${TitleCaseName}Error;
+use actix_web::{
+    get,
+    web::Data,
+};
+use actix_files::NamedFile;
+
+#[get("/")]
+pub async fn get_index() -> Result<NamedFile, ${TitleCaseName}Error> {
+    Ok(NamedFile::open("src/web/dist/index.html").unwrap())
+}
+`
+}
+
+export function webServices() {
+  return `
+    .service(
+        web::scope("web")
+            .service(routes::web::get_index)
+    )
+    .service(
+        web::scope("assets")
+            .service(routes::web::get_index_js)
+            .service(routes::web::get_index_css)
+            .service(routes::web::get_react_svg),
+    );
+}
+`
+}
+
+
