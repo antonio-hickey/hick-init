@@ -10,6 +10,7 @@ import {
   defaultStructs, exampleRoute, routeConfig, 
   routeMod, webRoutes, webServices
 } from './boilerplate.js';
+import { dashCaseToTitleCase } from '../util.js';
 
 export async function createNewProject() {
   // Get name choice
@@ -21,13 +22,14 @@ export async function createNewProject() {
 	}).then(async (useCase) => {
     name = useCase.nameChoice;
 	});
+  const codeSafeName = dashCaseToTitleCase(name);
 
   // Check if project needs a web frontend
   const needsWebFrontend = await confirm({ message: 'Does this project need a Web Frontend?' });
 
   // Create new cargo project
   cp.execSync(`cargo new ${name}`);
-  generateBoilerplate(name);
+  generateBoilerplate(name, codeSafeName);
 
   if (needsWebFrontend) {
     const jsFlavor = await select({ 
@@ -41,12 +43,14 @@ export async function createNewProject() {
       ]
     });
     createViteApp(name, jsFlavor);
-    integrateWebFrontend(name);
+    integrateWebFrontend(name, codeSafeName);
   }
 }
 
 
-async function generateBoilerplate(projName: string) {
+async function generateBoilerplate(projName: string, codeSafeName: string) {
+  // Parses the proj name into a code safe string
+
   // Write the Cargo.toml file
   fs.writeFile(`${projName}/Cargo.toml`, cargoConfig(projName), err => {
     if (err) {
@@ -62,7 +66,7 @@ async function generateBoilerplate(projName: string) {
   });
 
   // Write the src/error.rs file
-  fs.writeFile(`${projName}/src/error.rs`, errorHandling(projName), err => {
+  fs.writeFile(`${projName}/src/error.rs`, errorHandling(codeSafeName), err => {
     if (err) {
       console.log('Failed to create src/error.rs !');
     }
@@ -82,7 +86,7 @@ async function generateBoilerplate(projName: string) {
   fs.mkdirSync(`${projName}/src/routes`)
 
   // Write the src/routes/example.rs file
-  fs.writeFile(`${projName}/src/routes/example.rs`, exampleRoute(projName), err => {
+  fs.writeFile(`${projName}/src/routes/example.rs`, exampleRoute(codeSafeName), err => {
     if (err) { console.log('Failed to create src/structs.rs !') };
   });
 
@@ -108,9 +112,9 @@ async function createViteApp(projName: string, jsFlavor: string) {
   process.chdir('../..');
 }
 
-async function integrateWebFrontend(projName: string) {
+async function integrateWebFrontend(projName: string, codeSafeName: string) {
   // Create src/routes/web.rs and insert boilerplate
-  fs.writeFile(`${projName}/src/routes/web.rs`, webRoutes(projName), err => {
+  fs.writeFile(`${projName}/src/routes/web.rs`, webRoutes(codeSafeName), err => {
     if (err) { console.log('Failed to create src/routes/web.rs !') };
   });
 
