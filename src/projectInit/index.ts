@@ -2,6 +2,7 @@ import inquirer from 'inquirer';
 import cp from 'child_process';
 import fs from 'fs';
 import confirm from '@inquirer/confirm';
+import { select } from '@inquirer/prompts';
 
 
 import { 
@@ -29,7 +30,17 @@ export async function createNewProject() {
   generateBoilerplate(name);
 
   if (needsWebFrontend) {
-    createViteReactApp(name);
+    const jsFlavor = await select({ 
+      message: 'What JavaScript (TS) Flavor ?',
+      choices: [
+        { name: 'Vanilla', value: 'vanilla-ts' },
+        { name: 'React', value: 'react-ts' },
+        { name: 'Preact', value: 'preact-ts' },
+        { name: 'Svelte', value: 'svelte-ts' },
+        { name: 'Qwick', value: 'qwick-ts' },
+      ]
+    });
+    createViteApp(name, jsFlavor);
     integrateWebFrontend(name);
   }
 }
@@ -86,12 +97,12 @@ async function generateBoilerplate(projName: string) {
   });
 }
 
-async function createViteReactApp(projName: string) {
+async function createViteApp(projName: string, jsFlavor: string) {
   // Go into ./src/ 
   process.chdir(`${projName}/src`);
 
   // Create a vite app (React, Typescript, SWC)
-  cp.execSync('npm create vite@latest web -- --template react-ts --jsx swc');
+  cp.execSync(`npm create vite@latest web -- --template ${jsFlavor} --jsx swc`);
 
   // Go back to dir we started at
   process.chdir('../..');
