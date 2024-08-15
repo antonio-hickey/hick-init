@@ -4,7 +4,8 @@ export function snakeCaseToTitleCase(snakeCase: string) {
       .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join('');
   } 
-  else { return snakeCase }
+
+  else { return snakeCase; }
 }
 
 export function dashCaseToTitleCase(dashCase: string) {
@@ -13,6 +14,7 @@ export function dashCaseToTitleCase(dashCase: string) {
       .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join('');
   } 
-  else { return dashCase }
+
+  else { return dashCase; }
 }
 

@@ -10,18 +10,18 @@ authors = ["Antonio Hickey <contact@antoniohickey.com>"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
-actix-web = "4"
+actix-web = "4.9.0"
 anyhow = "1.0.75"
 dotenv = "0.15.0"
 env_logger = "0.10.0"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-sqlx = { version = "0.7", features = [ "runtime-tokio", "tls-rustls", "postgres" ] }
-  `;
+sqlx = { version = "0.8.0", features = [ "runtime-tokio", "tls-rustls", "postgres" ] }
+`;
 }
 
 /// src/main.rs boilerplate
-export function mainFile(projName: string) {
+export function mainFile() {
   return `mod error;
 mod routes;
 mod structs;
@@ -67,7 +67,7 @@ async fn main() -> Result<()> {
     .await?)
 }
 
-  `;
+`;
 }
 
 export function errorHandling(projName: string) {
@@ -102,7 +102,7 @@ impl From<sqlx::Error> for ${TitleCaseName}Error {
         ${TitleCaseName}Error::SqlError(err)
     }
 }
-  `;
+`;
 }
 
 export function defaultStructs() {
@@ -116,7 +116,7 @@ pub struct AppState {
     pub max_payload_size: usize,
 }
 
-  `
+`;
 }
 
 export function exampleRoute(projName: string) {
@@ -147,7 +147,7 @@ async fn welcome(path: web::Path<String>) -> impl Responder {
     HttpResponse::Ok().body(format!("Hello {}", path.into_inner()))
 }
 
-  `
+`;
 }
 
 export function routeConfig() {
@@ -163,14 +163,14 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
     );
 }  
 
-  `
+`;
 }
 
 export function routeMod() {
   return `pub mod example;
 pub mod config;
 
-  `
+`;
 }
 
 export function webRoutes(projName: string) {
@@ -187,7 +187,7 @@ use actix_files::NamedFile;
 pub async fn get_index() -> Result<NamedFile, ${TitleCaseName}Error> {
     Ok(NamedFile::open("src/web/dist/index.html").unwrap())
 }
-`
+`;
 }
 
 export function webServices() {
@@ -203,7 +203,7 @@ export function webServices() {
             .service(routes::web::get_react_svg),
     );
 }
-`
+`;
 }
 
 
