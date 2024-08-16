@@ -5,7 +5,7 @@ export function snakeCaseToTitleCase(snakeCase: string) {
       .join('');
   } 
 
-  else { return snakeCase; }
+  else { return (snakeCase.charAt(0).toUpperCase() + snakeCase.slice(1)); }
 }
 
 export function dashCaseToTitleCase(dashCase: string) {
