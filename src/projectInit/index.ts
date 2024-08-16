@@ -9,7 +9,7 @@ import { needToDoMore } from '../index.js';
 import { 
   cargoConfig, mainFile, errorHandling, 
   defaultStructs, exampleRoute, routeConfig, 
-  routeMod, webRoutes, webServices
+  routeMod, webRoutes, webServices, viteConfig
 } from './boilerplate.js';
 import { dashCaseToTitleCase } from '../util.js';
 
@@ -99,6 +99,25 @@ async function createViteApp(projName: string, jsFlavor: string) {
   
   // Create a vite app (React, Typescript, SWC)
   cp.execSync(`npm create vite@latest web -- --template ${jsFlavor} --jsx swc`);
+
+  // Configure vite
+  fs.writeFile(`web/vite.config.ts`, viteConfig(), err => {
+    if (err) { console.log('Failed to configure vite!', err); }
+  });
+
+  // Add deps
+  fs.readFile(`${projName}/src/web/package.json`, 'utf8', (err, data) => {
+    if (err) { console.log('Failed to read routes module !'); }
+    else {
+      const jsonData = JSON.parse(data);
+      jsonData['devDependencies']['@types/node'] = '^20.10.5';
+      jsonData['devDependencies']['@vitejs/plugin-react-swc'] = '^3.7.0';
+
+      fs.writeFile(`${projName}/src/web/package.json`, JSON.stringify(jsonData), err => {
+        if (err) { console.log('Failed to update routes module !'); }
+      });
+    }
+  });
   
   // Go back to dir we started at
   process.chdir('../..');

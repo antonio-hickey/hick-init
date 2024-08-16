@@ -177,15 +177,22 @@ export function webRoutes(projName: string) {
   const TitleCaseName = snakeCaseToTitleCase(projName);
 
   return `use crate::error::${TitleCaseName}Error;
-use actix_web::{
-    get,
-    web::Data,
-};
+use actix_web::get;
 use actix_files::NamedFile;
 
 #[get("/")]
 pub async fn get_index() -> Result<NamedFile, ${TitleCaseName}Error> {
     Ok(NamedFile::open("src/web/dist/index.html").unwrap())
+}
+
+#[get("/index.js")]
+pub async fn get_index_js() -> Result<NamedFile, ${TitleCaseName}Error> {
+    Ok(NamedFile::open("src/web/dist/index.js").unwrap())
+}
+
+#[get("/index.css")]
+pub async fn get_index_css() -> Result<NamedFile, ${TitleCaseName}Error> {
+    Ok(NamedFile::open("src/web/dist/index.css").unwrap())
 }
 `;
 }
@@ -194,16 +201,35 @@ export function webServices() {
   return `
     .service(
         web::scope("web")
-            .service(routes::web::get_index)
+            .service(routes::web::get_index),
     )
     .service(
         web::scope("assets")
             .service(routes::web::get_index_js)
-            .service(routes::web::get_index_css)
-            .service(routes::web::get_react_svg),
+            .service(routes::web::get_index_css),
     );
 }
 `;
 }
 
+export function viteConfig() {
+  return `
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react-swc';
 
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  build: {
+    emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        entryFileNames: \`assets/[name].js\`,
+        chunkFileNames: \`assets/[name].js\`,
+        assetFileNames: \`assets/[name].[ext]\`,
+      }
+    }
+  }
+})
+`;
+}
