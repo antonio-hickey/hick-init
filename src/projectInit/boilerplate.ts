@@ -213,8 +213,7 @@ export function webServices() {
 }
 
 export function viteConfig() {
-  return `
-import { defineConfig } from 'vite';
+  return `import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 
 // https://vitejs.dev/config/

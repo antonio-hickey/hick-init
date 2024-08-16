@@ -41,6 +41,9 @@ export async function createNewProject(): Promise<boolean> {
       ]
     });
     createViteApp(name, jsFlavor);
+    integrateTailwindCss();
+
+    // Integrate the frontend with backend web server
     integrateWebFrontend(name, codeSafeName);
   }
   
@@ -106,21 +109,50 @@ async function createViteApp(projName: string, jsFlavor: string) {
   });
 
   // Add deps
-  fs.readFile(`${projName}/src/web/package.json`, 'utf8', (err, data) => {
-    if (err) { console.log('Failed to read routes module !'); }
-    else {
-      const jsonData = JSON.parse(data);
-      jsonData['devDependencies']['@types/node'] = '^20.10.5';
-      jsonData['devDependencies']['@vitejs/plugin-react-swc'] = '^3.7.0';
+  let data = fs.readFileSync('web/package.json').toString();
 
-      fs.writeFile(`${projName}/src/web/package.json`, JSON.stringify(jsonData), err => {
-        if (err) { console.log('Failed to update routes module !'); }
-      });
-    }
-  });
-  
-  // Go back to dir we started at
-  process.chdir('../..');
+  const jsonData = JSON.parse(data);
+  jsonData['devDependencies']['@types/node'] = '^20.10.5';
+  jsonData['devDependencies']['@vitejs/plugin-react-swc'] = '^3.7.0';
+
+  fs.writeFileSync(`web/package.json`, JSON.stringify(jsonData, null, 2));
+}
+
+async function integrateTailwindCss() {
+  // Go into web directory
+  process.chdir(`web`);
+
+  // Add tailwind dependencies
+  const packageData = fs.readFileSync(`package.json`, 'utf8').toString();
+  const packageJsonData = JSON.parse(packageData);
+  packageJsonData['devDependencies']['tailwindcss'] = '3.4.10';
+  packageJsonData['devDependencies']['postcss'] = '8.4.41';
+  packageJsonData['devDependencies']['autoprefixer'] = '10.4.20';
+
+  fs.writeFileSync(`package.json`, JSON.stringify(packageJsonData, null, 2));
+
+  // Initialize tailwindcss
+  cp.execSync('npx tailwindcss init -p');
+
+  // Add paths for tailwind to know where to read classes from
+  let tailwindConfigData = fs.readFileSync('tailwind.config.js', 'utf8')
+    .toString();
+  tailwindConfigData = tailwindConfigData
+    .replace(
+      'content: []', 
+      `content: [\n    "./index.html",\n    "./src/**/*.{js,ts,jsx,tsx}",\n  ]`
+    );
+
+  fs.writeFileSync('tailwind.config.js', tailwindConfigData);
+
+  // Add tailwind directives to index.css
+  fs.writeFileSync(
+    'src/index.css', 
+    '@tailwind base;\n@tailwind components;\n@tailwind utilities;',
+  );
+
+  // Go back to project root
+  process.chdir('../../..');
 }
 
 async function integrateWebFrontend(projName: string, codeSafeName: string) {
