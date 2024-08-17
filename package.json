@@ -4,6 +4,9 @@
   "description": "VERY opinionated CLI Tool for initializing projects.",
   "main": "src/index.ts",
   "type": "module",
+  "bin": {
+    "hick-init": "node /dist/index.js"
+  },
   "scripts": {
     "start": "tsc && node dist/index.js",
     "lint": "eslint . --ext .ts",
@@ -29,7 +32,6 @@
     "chalk-animation": "^2.0.3",
     "inquirer": "^9.1.4",
     "inquirer-file-tree-selection-prompt": "^2.0.5",
-    "nanospinner": "^1.1.0",
-    "pkg": "^5.8.1"
+    "nanospinner": "^1.1.0"
   }
 }
