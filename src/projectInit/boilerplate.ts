@@ -154,15 +154,14 @@ export function routeConfig() {
   return `use crate::routes;
 use actix_web::web;
 
-/// Configures all the api routes
+/// Configures all the routes
 pub fn configure_routes(cfg: &mut web::ServiceConfig) {
-    cfg.service(
-        web::scope("/example")
-            .service(routes::example::welcome)
-            .service(routes::example::echo)
-    );
-}  
+    let api_scope = web::scope("/api")
+        .service(routes::example::welcome)
+        .service(routes::example::echo);
 
+    cfg.service(api_scope);
+}  
 `;
 }
 
@@ -187,29 +186,27 @@ pub async fn get_index() -> Result<NamedFile, ${TitleCaseName}Error> {
 
 #[get("/index.js")]
 pub async fn get_index_js() -> Result<NamedFile, ${TitleCaseName}Error> {
-    Ok(NamedFile::open("src/web/dist/index.js").unwrap())
+    Ok(NamedFile::open("src/web/dist/assets/index.js").unwrap())
 }
 
 #[get("/index.css")]
 pub async fn get_index_css() -> Result<NamedFile, ${TitleCaseName}Error> {
-    Ok(NamedFile::open("src/web/dist/index.css").unwrap())
+    Ok(NamedFile::open("src/web/dist/assets/index.css").unwrap())
 }
 `;
 }
 
 export function webServices() {
-  return `
-    .service(
-        web::scope("web")
-            .service(routes::web::get_index),
-    )
-    .service(
-        web::scope("assets")
+  return {
+    'scope': `
+
+    let web_scope = web::scope("").service(routes::web::get_index).service(
+        web::scope("/assets")
             .service(routes::web::get_index_js)
             .service(routes::web::get_index_css),
-    );
-}
-`;
+    );`,
+    'service': '.service(web_scope);\n}'
+  }
 }
 
 export function viteConfig() {

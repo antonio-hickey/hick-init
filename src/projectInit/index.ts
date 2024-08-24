@@ -4,6 +4,7 @@ import fs from 'fs';
 import confirm from '@inquirer/confirm';
 import { select } from '@inquirer/prompts';
 import { needToDoMore } from '../index.js';
+import { getNthOccurrence } from '../util.js';
 
 
 import { 
@@ -128,6 +129,7 @@ async function integrateTailwindCss() {
   packageJsonData['devDependencies']['tailwindcss'] = '3.4.10';
   packageJsonData['devDependencies']['postcss'] = '8.4.41';
   packageJsonData['devDependencies']['autoprefixer'] = '10.4.20';
+  packageJsonData['devDependencies']['@heroicons/react'] = '2.1.5';
 
   fs.writeFileSync(`package.json`, JSON.stringify(packageJsonData, null, 2));
 
@@ -176,8 +178,14 @@ async function integrateWebFrontend(projName: string, codeSafeName: string) {
   fs.readFile(`${projName}/src/routes/config.rs`, 'utf8', (err, data) => {
     if (err) { console.log('Failed to read routes config !'); }
     else {
-      const idxLastSemicolon = data.lastIndexOf(';');
-      const updatedData = data.substring(0, idxLastSemicolon) + webServices();
+      const webRouteData = webServices();
+      const idxThirdSemicolon = getNthOccurrence(data, ';', 3) + 1;
+      const cfgServices = data.substring(idxThirdSemicolon);
+      let updatedData = data.substring(0, idxThirdSemicolon) + webRouteData.scope + cfgServices;
+
+      const idxLastSemicolon = updatedData.lastIndexOf(';');
+      updatedData = updatedData.substring(0, idxLastSemicolon) + webRouteData.service;
+
       fs.writeFile(`${projName}/src/routes/config.rs`, updatedData, err => {
         if (err) { console.log('Failed to update routes config !'); }
       });

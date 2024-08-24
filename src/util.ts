@@ -18,3 +18,15 @@ export function dashCaseToTitleCase(dashCase: string) {
   else { return dashCase; }
 }
 
+export function getNthOccurrence(str: string, char: string, n: number) {
+  let index = -1;
+
+  for (let i = 0; i < n; i++) {
+    index = str.indexOf(char, index + 1);
+    if (index === -1) {
+      return -1; // Character doesn't occur n times
+    }
+  }
+
+  return index;
+}

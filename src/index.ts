@@ -11,7 +11,7 @@ async function main() {
   inquirer.prompt({
     name: 'desired_use',
     type: 'list',
-    message: 'What you making today bro0oo?',
+    message: 'What you making today bro0oo? (v1.0.4)',
     choices: [
       'Create New Project',
       'Create New Web Scraper (! UNIMPLEMENTED !)',
